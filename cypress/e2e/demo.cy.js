@@ -29,6 +29,20 @@ describe('Login Functionality', () => {
 
     })
 
+    it('Log in with Valid credentials', () => {
+      cy.visit("https://opensource-demo.orangehrmlive.com/")
   
+      //Enter username and password
+      cy.get('input[placeholder="Username"]').type('Admin')
+      cy.get('input[placeholder="Password"]').type('admin123')  
+  
+      // Click the login button
+      cy.get("button[type='submit']").click()
+  
+      // Verify that the dashboard is displayed
+      cy.url().should('include', '/index.php/dashboard')
+      cy.contains('Dashboard').should('be.visible')
+  
+    })
 })
 
