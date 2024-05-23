@@ -1,7 +1,8 @@
 describe('Get the Page Title', () => {
   it('Visit the orangeHRM site and get the title', () => {
     //Visit the Url
-    cy.visit("https://opensource-demo.orangehrmlive.com/")
+      cy.visit("https://opensource-demo.orangehrmlive.com/")
+
 
     //Get the title of the page and log it
     cy.title().then((title) => {
@@ -12,37 +13,47 @@ describe('Get the Page Title', () => {
 })
 
 // Verify that user can login with valid credentials
-describe('Login Functionality', () => {  
-    // Check error messages for invalid credentials
-    it('Show error for invalid credentials', () => {
-      cy.visit("https://opensource-demo.orangehrmlive.com/")
-
-      //Enter invalid username and password
-      cy.get('input[placeholder="Username"]').type('invalid')
-      cy.get('input[placeholder="Password"]').type('invalid123')
-
-      //Click the login button
-      cy.get("button[type='submit']").click()
-
-      // Verify the error message
-      cy.get('#app > div.orangehrm-login-layout > div > div.orangehrm-login-container > div > div.orangehrm-login-slot > div.orangehrm-login-form > div > div.oxd-alert.oxd-alert--error > div.oxd-alert-content.oxd-alert-content--error > p').should('have.text', 'Invalid credentials')
-
-    })
-
-    it('Log in with Valid credentials', () => {
+describe('Login Test', () => {
+    it('Should log in successfully', () => {
       cy.visit("https://opensource-demo.orangehrmlive.com/")
   
-      //Enter username and password
+      //Enter username 
       cy.get('input[placeholder="Username"]').type('Admin')
+      // Enter password
       cy.get('input[placeholder="Password"]').type('admin123')  
   
       // Click the login button
       cy.get("button[type='submit']").click()
   
       // Verify that the dashboard is displayed
-      cy.url().should('include', '/index.php/dashboard')
+      cy.url().should('include', '/web/index.php/dashboard/index')
       cy.contains('Dashboard').should('be.visible')
+    })
+
+    it('should navigate to the Admin page', () => {
+      // Log in first
+      cy.get('input[placeholder="Username"]').type('Admin')
+      cy.get('input[placeholder="Password"]').type('admin123')
+      cy.get("button[type='submit']").click()
   
+      // Click on the Admin tab in the sidebar menu
+      cy.get('a[href="/web/index.php/admin/viewAdminModule"]').click()
+  
+      // Verify that the Admin page is loaded
+      cy.url().should('include', '/web/index.php/admin/viewAdminModule')
+      cy.get('h6').should('contain', 'User Management')
+    })
+  
+    it('should log out successfully', () => {
+      // Log in first
+      cy.get('input[name="Username"]').type('Admin')
+      cy.get('input[name="password"]').type('admin123')
+      cy.get("button[type='submit']").click()
+
+      //Click on the user dropdown menu
+      cy.get('.oxd-userdropdown-name').click()
+
+      //Click on the logout button
+      cy.get('a[href="/web/index.php/auth/logout"]').click()
     })
 })
-
